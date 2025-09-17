@@ -1,2 +1,11 @@
 /data/Raw Data1.xlsx
-.env
+/.env
+### Deno template
+/.idea/
+/.vscode/
+
+/node_modules
+*.orig
+*.pyc
+*.swp
+
