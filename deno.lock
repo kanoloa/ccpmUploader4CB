@@ -2,6 +2,7 @@
   "version": "5",
   "specifiers": {
     "jsr:@std/assert@1": "1.0.14",
+    "jsr:@std/cli@*": "1.0.22",
     "jsr:@std/internal@^1.0.10": "1.0.10"
   },
   "jsr": {
@@ -11,13 +12,24 @@
         "jsr:@std/internal"
       ]
     },
+    "@std/cli@1.0.22": {
+      "integrity": "50d1e4f87887cb8a8afa29b88505ab5081188f5cad3985460c3b471fa49ff21a"
+    },
     "@std/internal@1.0.10": {
       "integrity": "e3be62ce42cab0e177c27698e5d9800122f67b766a0bea6ca4867886cbde8cf7"
     }
   },
+  "redirects": {
+    "https://github.com/kanoloa/cbclient/raw/main/mod.ts": "https://raw.githubusercontent.com/kanoloa/cbclient/main/mod.ts",
+    "https://github.com/kanoloa/cbclient/raw/main/types/index.ts": "https://raw.githubusercontent.com/kanoloa/cbclient/main/types/index.ts"
+  },
   "remote": {
     "https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/cpexcel.full.mjs": "7a7bba23b6b6f23b5c69fbb631f78d1d455f74b57e4aa54e9a2f81a8ab844964",
-    "https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs": "1a0fb062ee9781b13f6687371b202aaefc53b6ce55b530c027e01f9c087b77db"
+    "https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs": "1a0fb062ee9781b13f6687371b202aaefc53b6ce55b530c027e01f9c087b77db",
+    "https://raw.githubusercontent.com/kanoloa/cbclient/main/mod.ts": "02e8539861c9977ef66b7844e3d046dede2946cd8408efbf2c62bd998130445c",
+    "https://raw.githubusercontent.com/kanoloa/cbclient/main/types/cbtypes.ts": "2949227ca3076ab8194e629deb0480ff2672fc5227993bb2724bc7a165e0fa34",
+    "https://raw.githubusercontent.com/kanoloa/cbclient/main/types/index.ts": "342c8bdb424425acaedd1e7f72f5be110e84405ce193129aba9738bb560ffc38",
+    "https://raw.githubusercontent.com/kanoloa/cbclient/main/types/types.ts": "1d6574d2037c7490bbd0e21442c72482264258dc09e3147a5feb660624c5f8d7"
   },
   "workspace": {
     "dependencies": [

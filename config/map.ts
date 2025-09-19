@@ -1,0 +1,12 @@
+/*
+ *  MAPPING OF CCPM DATA
+ */
+
+const CCPM_TYPE: number = 0;
+const CCPM_LEVEL= 1;
+const CCPM_ID= 2;
+const CCPM_CODE= 3;
+const CCPM_NAME= 4;
+const CCPM_STATUS= 14;
+
+export {CCPM_TYPE, CCPM_LEVEL, CCPM_ID, CCPM_CODE, CCPM_NAME, CCPM_STATUS};

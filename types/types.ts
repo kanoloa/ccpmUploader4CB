@@ -11,3 +11,18 @@ export interface ENV {
     debug: boolean,
     method_interval: number
 }
+
+export interface CCPM_DATA {
+    type: 'Group' | 'Task' | 'Milestone',
+    level: number,
+    code: number,
+    id: number,
+    name: string,
+    status: string,
+    predecessor: number[] | string[] | undefined,
+    successor: number[] | string[] | undefined,
+
+    /* Codebeamer item id */
+    itemId: number | undefined,
+}
+
