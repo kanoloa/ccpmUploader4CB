@@ -3,8 +3,8 @@ export interface ENV {
     username: string,
     password: string,
     proxy_url: string,
-    ccpmProjectId: number,
-    ccpmTaskTrackerId: number,
+    project_id: number,
+    tracker_id: number,
     method: 'url' | 'file',
     source_url?: string,
     source_file?: string,
@@ -12,17 +12,20 @@ export interface ENV {
     method_interval: number
 }
 
-export interface CCPM_DATA {
+
+export interface DATA {
     type: 'Group' | 'Task' | 'Milestone',
     level: number,
     code: number,
     id: number,
     name: string,
     status: string,
-    predecessor: number[] | string[] | undefined,
-    successor: number[] | string[] | undefined,
+    description: string,
+    predecessor_id: number[] | undefined,
+    successor_id: number[] | undefined,
 
     /* Codebeamer item id */
     itemId: number | undefined,
 }
+
 

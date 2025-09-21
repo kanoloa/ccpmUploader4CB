@@ -30,8 +30,8 @@ export const setConfig = () => {
     env.username = (args.username ? args.username : Deno.env.get('USERNAME'));
     env.password = (args.password ? args.password : Deno.env.get('PASSWORD'));
     env.proxy_url = (args.proxy_url ? args.proxy_url : Deno.env.get('PROXY_URL'));
-    env.ccpmProjectId = (args.project_id ? args.project_id : Number(Deno.env.get('CCPM_PROJECT_ID')));
-    env.ccpmTaskTrackerId = (args.tracker_id ? args.tracker_id : Number(Deno.env.get('CCPM_TASK_TRACKER_ID')));
+    env.project_id = (args.project_id ? args.project_id : Number(Deno.env.get('CCPM_PROJECT_ID')));
+    env.tracker_id = (args.tracker_id ? args.tracker_id : Number(Deno.env.get('CCPM_TASK_TRACKER_ID')));
     env.method = (args.method ? args.method : Deno.env.get('READ_FROM'));
     env.source_url = (args.source_url ? args.source_url : Deno.env.get('SOURCE_URL'));
     env.source_file = (args.source_file ? args.source_file : Deno.env.get('SOURCE_FILE'));
@@ -71,13 +71,13 @@ export const setConfig = () => {
         Deno.exit(1);
     }
 
-    if (env.ccpmProjectId == null) {
+    if (env.project_id == null) {
         console.error("setConfig(): Missing ccpmProjectId.");
         print_usage();
         Deno.exit(1);
     }
 
-    if (env.ccpmTaskTrackerId == null) {
+    if (env.tracker_id == null) {
         console.error("setConfig(): Missing ccpmTaskTrackerId.");
         print_usage();
         Deno.exit(1);
@@ -95,12 +95,12 @@ Usage:
     --server_url <server_url>           Codebeamer endpoint url
     --username <username>               Codebeamer login name
     --password <>                       Codebeamer login password
-    --method [url|file]                 Method to read CCPM data from
-    --source_url <source_url>           Required if method is 'url' in FQDN
-    --source_file <source_file>         Required if method is 'file' in a relative path
-    --project_id <project_id>           CCPM project id
-    --tracker_id <tracker_id>           CCPM Task tracker id
-    --method_interval <method_interval> flow control factor for open api
+    --method [url|file]                 Method to read CCPM exported xlsx file
+    --source_url <source_url>           Source file FQDN: required if method is 'url'
+    --source_file <source_file>         Source file location: required if method is 'file'
+    --project_id <project_id>           CCPM project id in Codebeamer
+    --tracker_id <tracker_id>           CCPM Task tracker id in Codebeamer
+    --method_interval <method_interval> flow control factor
 
   Optional arguments:
     --proxy_url <proxy_url>             Proxy url
@@ -110,6 +110,5 @@ Usage:
 }
 
 if (import.meta.main) {
-    const DEBUG = (Deno.env.get('DEBUG') == 'true');
-    if (DEBUG) console.log(setConfig());
+    print_usage();
 }
