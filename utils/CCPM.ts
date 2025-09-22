@@ -72,10 +72,16 @@ export async function load(env) {
             id: row[POS.CCPM_ID],
             code: row[POS.CCPM_CODE],
             name: row[POS.CCPM_NAME],
+            started: row[POS.CCPM_STARTED],
             status: row[POS.CCPM_STATUS],
-            predecessor_id: row[POS.CCPM_PREDECESSOR_ID],
             successor_id: row[POS.CCPM_SUCCESSOR_ID]
         };
+        if (row[POS.CCPM_PREDECESSOR_ID] != null) {
+            entry.predecessor_id = row[POS.CCPM_PREDECESSOR_ID].split(',').map(id => parseInt(id, 10));
+        }
+        if (row[POS.CCPM_SUCCESSOR_ID] != null) {
+            entry.successor_id = row[POS.CCPM_SUCCESSOR_ID].split(',').map(id => parseInt(id, 10));
+        }
         // console.log(`code = ${row[POS.CCPM_CODE]}, predecessor = ${entry.predecessor_id}, successor = ${entry.successor_id}`);
         map.set(row[POS.CCPM_CODE], entry)
     })

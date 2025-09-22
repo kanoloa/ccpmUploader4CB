@@ -23,6 +23,7 @@ export interface DATA {
     description: string,
     predecessor_id: number[] | undefined,
     successor_id: number[] | undefined,
+    started: boolean,
 
     /* Codebeamer item id */
     itemId: number | undefined,
