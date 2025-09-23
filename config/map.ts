@@ -18,17 +18,25 @@ const CCPM_SUCCESSOR_ID: number = 35;
 // To skip the header row, set CCPM_SKIP_HEADER to true.
 const CCPM_SKIP_HEADER: boolean = true;
 
+//
 // C O D E B E A M E R
+//
 // Codebeamer Custom Field IDs
 const CB_TASK_TYPE_FID: number = 1000;
 const CB_TASK_LEVEL_FID: number = 10000;
 const CB_TASK_ID_FID: number = 10001;
 const CB_TASK_CODE_FID: number = 10002;
 const CB_TASK_STARTED_FID: number = 10007;
+const CB_TASK_PREDECESSOR_FID: number = 10016;
+const CB_TASK_SUCCESSOR_FID: number = 10017;
+//
 // Definition for Task Type.
 const CB_TASK_TYPE_MILESTONE_ID: number = 1;
 const CB_TASK_TYPE_GROUP_ID: number = 2;
 const CB_TASK_TYPE_TASK_ID: number = 3;
+const CB_TASK_TYPE_GOAL_ID: number = 4;
+//
+// Field type definitions.
 const CB_TASK_TYPE_STRING: string = "ChoiceFieldValue";
 const CB_TASK_TYPE_VALUE_TYPE_STRING: string = "ChoiceOptionReference"
 const CB_TASK_LEVEL_STRING: string = "DecimalFieldValue";
@@ -36,11 +44,13 @@ const CB_TASK_ID_STRING: string = "IntegerFieldValue";
 const CB_TASK_CODE_STRING: string = "IntegerFieldValue";
 const CB_TASK_STARTED_STRING: string = "BoolFieldValue";
 const CB_TASK_STATUS_STRING: string = "ChoiceOptionReference";
+const CB_TASK_PREDECESSOR_STRING = "TextFieldValue";
+const CB_TASK_SUCCESSOR_STRING = "TextFieldValue";
 
 const CB_TASK_STATUS = {
     "未着手": 1,
-    "実行中": 3,
-    "完了": 7
+    "実行中": 2,
+    "完了": 3
 }
 
 export {
@@ -60,9 +70,12 @@ export {
     CB_TASK_ID_FID,
     CB_TASK_CODE_FID,
     CB_TASK_STARTED_FID,
+    CB_TASK_PREDECESSOR_FID,
+    CB_TASK_SUCCESSOR_FID,
     CB_TASK_TYPE_MILESTONE_ID,
     CB_TASK_TYPE_GROUP_ID,
     CB_TASK_TYPE_TASK_ID,
+    CB_TASK_TYPE_GOAL_ID,
     CB_TASK_STATUS,
     CB_TASK_TYPE_STRING,
     CB_TASK_LEVEL_STRING,
@@ -71,4 +84,6 @@ export {
     CB_TASK_STARTED_STRING,
     CB_TASK_STATUS_STRING,
     CB_TASK_TYPE_VALUE_TYPE_STRING,
+    CB_TASK_PREDECESSOR_STRING,
+    CB_TASK_SUCCESSOR_STRING,
 };

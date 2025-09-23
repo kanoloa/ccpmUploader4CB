@@ -14,15 +14,15 @@ export interface ENV {
 
 
 export interface DATA {
-    type: 'Group' | 'Task' | 'Milestone',
+    type: 'Goal' | 'Group' | 'Task' | 'Milestone',
     level: number,
     code: number,
     id: number,
     name: string,
     status: string,
     description: string,
-    predecessor_id: number[] | undefined,
-    successor_id: number[] | undefined,
+    predecessor_id: string | undefined,
+    successor_id: string | undefined,
     started: boolean,
     parent_id: number | undefined,
     parent_name: string | undefined,

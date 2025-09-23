@@ -21,6 +21,9 @@ function getItemEntry(env: ENV, data: DATA) {
             case 'Task':
                 type.id = POS.CB_TASK_TYPE_TASK_ID;
                 break;
+            case 'Goal':
+                type.id = POS.CB_TASK_TYPE_GOAL_ID;
+                break;
         }
         type.name = data.type;
         type.type = POS.CB_TASK_TYPE_VALUE_TYPE_STRING;
@@ -47,37 +50,49 @@ function getItemEntry(env: ENV, data: DATA) {
             type: POS.CB_TASK_STATUS_STRING,
             id: POS.CB_TASK_STATUS[data.status]
         },
-        // parent: parent,
+
         customFields: [
             {
                 "fieldId": POS.CB_TASK_TYPE_FID,
                 "name": "CCPM Task Type",
                 "values": [type],
-                "type": POS.CB_TASK_TYPE_STRING,
+                "type": POS.CB_TASK_TYPE_STRING
             },
             {
                 "fieldId": POS.CB_TASK_LEVEL_FID,
                 "name": "CCPM Task Level",
                 "value": data.level,
-                "type": POS.CB_TASK_LEVEL_STRING,
+                "type": POS.CB_TASK_LEVEL_STRING
             },
             {
                 "fieldId": POS.CB_TASK_ID_FID,
                 "name": "CCPM Task Id",
                 "value": data.id,
-                "type": POS.CB_TASK_ID_STRING,
+                "type": POS.CB_TASK_ID_STRING
             },
             {
                 "fieldId": POS.CB_TASK_CODE_FID,
                 "name": "CCPM Task Code",
                 "value": data.code,
-                "type": POS.CB_TASK_CODE_STRING,
+                "type": POS.CB_TASK_CODE_STRING
             },
             {
                 "fieldId": POS.CB_TASK_STARTED_FID,
                 "name": "CCPM Started",
                 "value": data.started,
-                "type": POS.CB_TASK_STARTED_STRING,
+                "type": POS.CB_TASK_STARTED_STRING
+            },
+            {
+                "fieldId": POS.CB_TASK_PREDECESSOR_FID,
+                "name": "CCPM Predecessor Id",
+                "value": data.predecessor_id,
+                "type": POS.CB_TASK_PREDECESSOR_STRING
+            },
+            {
+                "fieldId": POS.CB_TASK_SUCCESSOR_FID,
+                "name": "CCPM Successor Id",
+                "value": data.successor_id,
+                "type": POS.CB_TASK_SUCCESSOR_STRING
             }
         ]
     };
@@ -125,6 +140,10 @@ export async function addNewChildItem(env: ENV, parent: number, child: number) {
         password: env.password,
         serverUrl: env.server_url
     }
+
+    // flow control: wait for a specified duration before calling Codebeamer api.
+    const interval = env.method_interval ? env.method_interval * 1000 : 1000;
+    await delay(interval);
 
     const res = await cb.addNewChildItem(cbinit, parent, child);
     if (! cb.isTrackerItemChildReference(res)) {
@@ -181,6 +200,7 @@ export async function load (env: ENV) {
     if(cb.isTrackerItemSearchResult(res)) {
         if (res.items != null) {
             console.log(`codebeamer.load(): ${res.total} items retrieved from Codebeamer.`);
+
             res.items.forEach(item => {
                 const entry: DATA = {};
                 entry.itemId = item.id;
@@ -191,7 +211,7 @@ export async function load (env: ENV) {
                     item.customFields.forEach(field => {
                         switch (field.name) {
                             case 'CCPM Task Type':
-                                entry.type = field.value;
+                                entry.type = field.values[0].name;
                                 break;
                             case 'CCPM Task Level':
                                 entry.level = Number(field.value);
@@ -199,11 +219,17 @@ export async function load (env: ENV) {
                             case 'CCPM Task Code':
                                 entry.code = Number(field.value);
                                 break;
-                            case 'CCPM Task Id':
+                            case 'CCPM Task ID':
                                 entry.id = Number(field.value);
                                 break;
                             case 'CCPM Started':
                                 entry.started = Boolean(field.value);
+                                break;
+                            case 'CCPM Predecessor Id':
+                                entry.predecessor_id = field.value;
+                                break;
+                            case 'CCPM Successor Id':
+                                entry.successor_id = field.value;
                                 break;
                             default:
                                 // do nothing
