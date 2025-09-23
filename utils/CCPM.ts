@@ -73,8 +73,8 @@ export async function load(env) {
             code: row[POS.CCPM_CODE],
             name: row[POS.CCPM_NAME],
             started: row[POS.CCPM_STARTED],
-            status: row[POS.CCPM_STATUS],
-            successor_id: row[POS.CCPM_SUCCESSOR_ID]
+            status: row[POS.CCPM_STATUS]
+            // successor_id: row[POS.CCPM_SUCCESSOR_ID]
         };
         if (row[POS.CCPM_PREDECESSOR_ID] != null) {
             entry.predecessor_id = row[POS.CCPM_PREDECESSOR_ID].split(',').map(id => parseInt(id, 10));

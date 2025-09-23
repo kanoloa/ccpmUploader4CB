@@ -30,10 +30,12 @@ const CB_TASK_TYPE_MILESTONE_ID: number = 1;
 const CB_TASK_TYPE_GROUP_ID: number = 2;
 const CB_TASK_TYPE_TASK_ID: number = 3;
 const CB_TASK_TYPE_STRING: string = "ChoiceFieldValue";
+const CB_TASK_TYPE_VALUE_TYPE_STRING: string = "ChoiceOptionReference"
 const CB_TASK_LEVEL_STRING: string = "DecimalFieldValue";
 const CB_TASK_ID_STRING: string = "IntegerFieldValue";
 const CB_TASK_CODE_STRING: string = "IntegerFieldValue";
 const CB_TASK_STARTED_STRING: string = "BoolFieldValue";
+const CB_TASK_STATUS_STRING: string = "ChoiceOptionReference";
 
 const CB_TASK_STATUS = {
     "未着手": 1,
@@ -67,4 +69,6 @@ export {
     CB_TASK_ID_STRING,
     CB_TASK_CODE_STRING,
     CB_TASK_STARTED_STRING,
+    CB_TASK_STATUS_STRING,
+    CB_TASK_TYPE_VALUE_TYPE_STRING,
 };

@@ -82,23 +82,57 @@ async function main(): void {
      *
      */
 
+    const levelMap = new Map<number, number>();
+
     for (const [key, value] of ccpmMap.entries()) {
 
-        // in case of a new entry
-        if (! targetMap.has(key)) {
+        // update CCPM Task Code of the current line.
+        levelMap.set(value.level, value.code);
 
+        if (! targetMap.has(key)) {
+            /* if the entry is new in CCPM, add it to Codebeamer.*/
             if (DEBUG) console.log(`main(): code ${key} seems to be a new entry. Item ${(JSON.stringify(value))} will be added in Codebeamer.`);
 
+            /* call Codebeamer API to add the new item. */
             const res = await codebeamer.createItem(env, value);
             if (res != null) {
-                if (DEBUG) console.log(`main(): item ${(JSON.stringify(res, null, 2))} added. `)
+
+                console.log(`main(): item ${res.id} added. `)
+
+                /* when the item should have a parent, add it as a child. */
+                if (value.level > 1) {
+
+                    /* get the parent itemId from the targetMap. */
+                    const parent = targetMap.get(levelMap.get(value.level - 1)).itemId;
+                    /* get the child itemId from REST response. */
+                    const child = res.id;
+                    /* call Codebeamer API to add the new child item. */
+                    const res2 = await codebeamer.addNewChildItem(env, parent, child);
+                    if (res2 != null) {
+                        if (DEBUG) console.log(`main(): ${child} added as a child of ${parent}`);
+                    } else {
+                        console.error(`main(): error ignored: response retuned from Codebeamer: ${JSON.stringify(res2)}`);
+                    }
+                }
+
+                /* update targetMap with the new entry. */
+                const newEntry: DATA = {
+                    type:  value.type,
+                    level: value.level,
+                    code: value.code,
+                    id: value.id,
+                    itemId: res.id,
+                    started: value.started,
+                    name: res.name,
+                }
+                targetMap.set(key, newEntry);
+                if (DEBUG) console.log(`main(): new entry added to targetMap: ${JSON.stringify(newEntry)}`);
             }
+
+
         }
-        //TODO: update targetMap with itemID.
+        // if (DEBUG) console.log(`main(): level => ${value.level}, levelMap => 1: ${levelMap.get(1)}, 2: ${levelMap.get(2)}, 3: ${levelMap.get(3)}, 4: ${levelMap.get(4)}, 5: ${levelMap.get(5)}`);
     }
-
-
-
 }
 
 
