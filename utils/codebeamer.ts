@@ -32,16 +32,6 @@ function getItemEntry(env: ENV, data: DATA) {
         return undefined;
     }
 
-    /*
-    const parent: cbtype.TrackerItemReference = {};
-    if (data.parent_id != null) {
-        parent.id = data.parent_id;
-        parent.name = data.parent_name;
-        parent.type = POS.CB_TRACKER_ITEM_REFERENCE;
-    }
-
-     */
-
     const item: cbtype.TrackerItem =  {
         name: itemName,
         description: "--",
