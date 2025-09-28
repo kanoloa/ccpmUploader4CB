@@ -153,21 +153,6 @@ async function main(): void {
             await codebeamer.createItem(env, value).then(async res => {
                 if (res != null) {
                     console.log(`main(): item ${res.id} added. `)
-                    /* when the item should have a parent, add it as a child. */
-                    //if (value.level > 1) {
-                        /* get the parent itemId from the codebeamerMap. */
-                    //    const parent = codebeamerMap.get(levelMap.get(value.level - 1)).itemId;
-                        /* get the child itemId from REST response. */
-                    //    const child = res.id;
-                        /* call Codebeamer API to add the new child item. */
-                    //    await codebeamer.addNewChildItem(env, parent, child).then(res => {
-                    //        if (res != null) {
-                    //            if (DEBUG) console.log(`main(): ${child} added as a child of ${parent}`);
-                    //        } else {
-                    //            console.error(`main(): createItem() error, ignored: response: ${JSON.stringify(res)}`);
-                    //        }
-                    //    });
-                    // }
 
                     /* update codebeamerMap with the new entry. */
                      codebeamerMap.set(key, {
