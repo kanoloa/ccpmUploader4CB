@@ -55,7 +55,7 @@ export async function load(env) {
         }
     }
 
-    const wb = XLSX.read(bytes, {});
+    const wb = XLSX.read(bytes, {cellDates: true});
     const ws = wb.Sheets[wb.SheetNames[POS.CCPM_SHEET_NUMBER]];
     const arrays =  XLSX.utils.sheet_to_json(ws, {header: 1});
 
@@ -76,17 +76,17 @@ export async function load(env) {
             status: row[POS.CCPM_STATUS],
             predecessor_id: row[POS.CCPM_PREDECESSOR_ID],
             successor_id: row[POS.CCPM_SUCCESSOR_ID]
-            // successor_id: row[POS.CCPM_SUCCESSOR_ID]
         };
-        /*
-        if (row[POS.CCPM_PREDECESSOR_ID] != null) {
-            entry.predecessor_id = row[POS.CCPM_PREDECESSOR_ID].split(',').map(id => parseInt(id, 10));
-        }
-        if (row[POS.CCPM_SUCCESSOR_ID] != null) {
-            entry.successor_id = row[POS.CCPM_SUCCESSOR_ID].split(',').map(id => parseInt(id, 10));
-        }
-        */
-        // console.log(`code = ${row[POS.CCPM_CODE]}, predecessor = ${entry.predecessor_id}, successor = ${entry.successor_id}`);
+
+        /* Adjust the start and end dates to be in UTC. */
+        const start = new Date(row[POS.CCPM_START_DATE]);
+        start.setHours(start.getHours() + 9);
+        entry.start_date = start;
+
+        const end = new Date(row[POS.CCPM_END_DATE]);
+        end.setHours(end.getHours() + 9);
+        entry.end_date = end;
+
         map.set(row[POS.CCPM_CODE], entry)
     })
 

@@ -1,5 +1,3 @@
-// import * as cbTypes from 'https://github.com/kanoloa/cbclient/raw/main/types/index.ts';
-// import * as cb from 'https://github.com/kanoloa/cbclient/blob/main/mod.ts';
 import * as config from "./utils/setConfig.ts"
 import * as ccpm  from "./utils/CCPM.ts";
 import * as codebeamer from "./utils/codebeamer.ts";
@@ -20,12 +18,43 @@ let codebeamerCount = 0;
 //
 
 function compareDataObjects(a: DATA, b: DATA) {
+    // a -> ccpm, b -> codebeamer, usually.
     const diff: DATA = {};
     for (const [key, value] of Object.entries(a)) {
-        if (key === 'itemId' || key === 'name') continue;
+        switch (key) {
+            case 'itemId':
+                continue;
+            case 'name':
+                if (value == null) continue;
+                if (value != b[key]) {
+                    diff[key] = value;
+                }
+                break;
+            case 'start_date':
+            case 'end_date':
+                    if (value != null) {
+                        const dateA = new Date(value);
+                        const dateB = new Date(b[key]);
+                        const ccpm_date: Date = dateA.setHours(dateA.getHours());
+                        /* This seems a bit tricky but required.  Codebeamer does not hold the timezone information. */
+                        const codebeamer_date: Date = dateB.setHours(dateB.getHours() + 9);
+                        if (ccpm_date !== codebeamer_date) {
+                            diff[key] = value;
+                        }
+                    }
+                    break;
+            default:
+                if (value != b[key]) {
+                    diff[key] = value;
+                }
+        }
+
+        /*
         if (value != b[key]) {
             diff[key] = value;
         }
+
+         */
     }
     return diff;
 }
@@ -33,7 +62,7 @@ function compareDataObjects(a: DATA, b: DATA) {
 //
 // M A I N  B L O C K
 //
-//if (import.meta.main) {
+
 async function main(): void {
 
     const start = new Date();
@@ -55,12 +84,12 @@ async function main(): void {
      *
      */
 
-    const targetMap = await codebeamer.load(env);
-    if (targetMap.size == null) {
+    const codebeamerMap = await codebeamer.load(env);
+    if (codebeamerMap.size == null) {
         console.error("main(): No data found in the codebeamer server.");
         exit(-1);
     }
-    codebeamerCount = targetMap.size;
+    codebeamerCount = codebeamerMap.size;
 
     /*
      * PREPARE 2: load CCPM data from Excel file.
@@ -72,18 +101,19 @@ async function main(): void {
         console.error("main():No data found in the specified source.");
         exit(-1);
     }
-
     ccpmCount = ccpmMap.size;
 
+    const updateItemArray = []
+
     if (DEBUG) {
-        console.log("main(): Excel: " + ccpmMap.size + ", Codebeamer: " + targetMap.size);
+        console.log("main(): Excel: " + ccpmMap.size + ", Codebeamer: " + codebeamerMap.size);
     }
 
     /*
-     * STEP 1: Delete items from Codebeamer that do not have a CCPM entry.
+     * STEP 1: When an item deleted from ccpm, then delete it from Codebeamer as well.
      *
      */
-    for (const [key, value] of targetMap) {
+    for (const [key, value] of codebeamerMap) {
 
         if (! ccpmMap.has(key)) {
             if (DEBUG) console.log(`main(): code ${key} does not have a CCPM entry. Item ${value.itemId} will be deleted from Codebeamer.`);
@@ -99,7 +129,7 @@ async function main(): void {
     }
 
     /*
-     * STEP 2: Update items in Codebeamer that have a CCPM entry.
+     * STEP 2: Synchronize CCPM entries with Codebeamer.
      *
      */
 
@@ -111,31 +141,36 @@ async function main(): void {
         /* update CCPM Task Code and level of the current line. */
         levelMap.set(value.level, value.code);
 
-        if (! targetMap.has(key)) {
-            /* the entry is new in CCPM, add it to Codebeamer. */
+        if (! codebeamerMap.has(key)) {
+            //
+            // CASE [1]: the entry is new in CCPM, add it to Codebeamer.
+            //
             if (DEBUG) console.log(`main(): code ${key} seems to be a new entry. Item ${(JSON.stringify(value))} will be added in Codebeamer.`);
+
+            value.parent_id = (value.level > 1) ? codebeamerMap.get(levelMap.get(value.level - 1)).itemId : null;
 
             /* call Codebeamer API to add the new item. */
             await codebeamer.createItem(env, value).then(async res => {
                 if (res != null) {
                     console.log(`main(): item ${res.id} added. `)
                     /* when the item should have a parent, add it as a child. */
-                    if (value.level > 1) {
-                        /* get the parent itemId from the targetMap. */
-                        const parent = targetMap.get(levelMap.get(value.level - 1)).itemId;
+                    //if (value.level > 1) {
+                        /* get the parent itemId from the codebeamerMap. */
+                    //    const parent = codebeamerMap.get(levelMap.get(value.level - 1)).itemId;
                         /* get the child itemId from REST response. */
-                        const child = res.id;
+                    //    const child = res.id;
                         /* call Codebeamer API to add the new child item. */
-                        await codebeamer.addNewChildItem(env, parent, child).then(res => {
-                            if (res != null) {
-                                if (DEBUG) console.log(`main(): ${child} added as a child of ${parent}`);
-                            } else {
-                                console.error(`main(): createItem() error, ignored: response: ${JSON.stringify(res)}`);
-                            }
-                        });
-                    }
-                    /* update targetMap with the new entry. */
-                     targetMap.set(key, {
+                    //    await codebeamer.addNewChildItem(env, parent, child).then(res => {
+                    //        if (res != null) {
+                    //            if (DEBUG) console.log(`main(): ${child} added as a child of ${parent}`);
+                    //        } else {
+                    //            console.error(`main(): createItem() error, ignored: response: ${JSON.stringify(res)}`);
+                    //        }
+                    //    });
+                    // }
+
+                    /* update codebeamerMap with the new entry. */
+                     codebeamerMap.set(key, {
                         type: value.type,
                         level: value.level,
                         code: value.code,
@@ -145,19 +180,35 @@ async function main(): void {
                         name: res.name,
                     });
                     createCount++;
-                    if (DEBUG) console.log(`main(): new entry added to targetMap: ${JSON.stringify(targetMap.get(key))}`);
+                    if (DEBUG) console.log(`main(): new entry added to targetMap: ${JSON.stringify(codebeamerMap.get(key))}`);
                 } else {
                     console.error(`main(): createItem() error, ignored: response: ${JSON.stringify(res)}`);
                 }
             })
+
         } else {
             /* An entry in CCPM also exists in Codebeamer.  check if the entry is updated. */
-            if (Object.keys(compareDataObjects(value, targetMap.get(key))).length !== 0) {
-                /* the entry is updated on CCPM.  update it in Codebeamer. */
+            const match = compareDataObjects(value, codebeamerMap.get(key));
+            if (Object.keys(match).length !== 0) {
+                //
+                // CASE[2]: the entry is updated on CCPM.  update it in Codebeamer.
+                //
                 if (DEBUG) console.log(`main(): code ${key} is different. diff = ${JSON.stringify(match)}.`);
+
+                value.itemId = codebeamerMap.get(key).itemId;
+
+                updateItemArray.push(value);
+                updateCount++;
+                // if (DEBUG) console.log(`main(): Task code ${value.code} will be updated: ${JSON.stringify(value)}`);
             }
         }
         // if (DEBUG) console.log(`main(): level => ${value.level}, levelMap => 1: ${levelMap.get(1)}, 2: ${levelMap.get(2)}, 3: ${levelMap.get(3)}, 4: ${levelMap.get(4)}, 5: ${levelMap.get(5)}`);
+    }
+
+    if (updateItemArray.length > 0) {
+        await codebeamer.updateItems(env, updateItemArray).then(res => {
+                if (DEBUG) console.log(`main(): ${res} items updated. `)
+        });
     }
 
     const end = new Date();

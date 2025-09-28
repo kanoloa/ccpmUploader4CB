@@ -23,6 +23,8 @@ export interface DATA {
     description: string,
     predecessor_id: string | undefined,
     successor_id: string | undefined,
+    start_date: Date | undefined,
+    end_date: Date | undefined,
     started: boolean,
     parent_id: number | undefined,
     parent_name: string | undefined,
