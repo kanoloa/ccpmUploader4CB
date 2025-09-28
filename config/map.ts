@@ -34,9 +34,9 @@ const CB_TASK_TYPE_FID: number = 1000;
 const CB_TASK_LEVEL_FID: number = 10000;
 const CB_TASK_ID_FID: number = 10001;
 const CB_TASK_CODE_FID: number = 10002;
-const CB_TASK_STARTED_FID: number = 10007;
-const CB_TASK_PREDECESSOR_FID: number = 10016;
-const CB_TASK_SUCCESSOR_FID: number = 10017;
+const CB_TASK_STARTED_FID: number = 10003;
+const CB_TASK_PREDECESSOR_FID: number = 10004;
+const CB_TASK_SUCCESSOR_FID: number = 10005;
 //
 // Definition for Task Type.
 const CB_TASK_TYPE_MILESTONE_ID: number = 1;
