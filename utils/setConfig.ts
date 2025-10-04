@@ -3,13 +3,14 @@ import {parseArgs} from "jsr:@std/cli/parse-args";
 
 function setArgs () {
     return parseArgs(Deno.args, {
-        boolean: ['debug'],
+        boolean: ['baseline','debug'],
         number: ['method_interval', 'project_id', 'tracker_id'],
         string: ['server_url', 'username', 'password', 'proxy_url', 'method', 'source_url', 'source_file'],
         alias: {
             s: 'server_url',
             u: 'username',
             p: 'password',
+            b: 'baseline',
             d: 'debug',
             m: 'method',
             i: 'method_interval',
@@ -37,6 +38,7 @@ export const setConfig = () => {
     env.source_file = (args.source_file ? args.source_file : Deno.env.get('SOURCE_FILE'));
     env.method_interval = (args.method_interval ? args.method_interval : Number(Deno.env.get('METHOD_INTERVAL_FACTOR')));
     env.debug = (args.debug ? true : Deno.env.get('DEBUG') == 'true');
+    env.baseline = (args.baseline ? true : Deno.env.get('BASELINE') == 'true');
 
     /* sanity checks */
     if (env.server_url == null) {
@@ -103,6 +105,7 @@ Usage:
     --method_interval <method_interval> flow control factor
 
   Optional arguments:
+    --baseline                          Create baseline before modifying the tracker
     --proxy_url <proxy_url>             Proxy url
     --debug`;
 

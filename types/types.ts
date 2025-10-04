@@ -9,7 +9,8 @@ export interface ENV {
     source_url?: string,
     source_file?: string,
     debug: boolean,
-    method_interval: number
+    method_interval: number,
+    baseline: boolean,
 }
 
 

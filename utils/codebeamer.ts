@@ -95,6 +95,27 @@ function getItemEntry(env: ENV, data: DATA) {
     return item;
 }
 
+export async function setBaseline(env) {
+    const DEBUG = (env.debug == true);
+
+    const cbinit: cbtype.cbinit = {
+        username: env.username,
+        password: env.password,
+        serverUrl: env.server_url
+    };
+
+    const res = await cb.setBaseline(cbinit, Number(env.project_id));
+    if(cb.isProjectReference(res)) {
+        if (DEBUG) {
+            console.log(`setBaseline(): new baseline ${(res.name ? res.name : '')} set to project ${res.id}.`);
+        }
+        return res;
+    } else {
+        console.error(`setBaseline(): error response retuned from Codebeamer: ${JSON.stringify(res, null, 2)}`);
+        return undefined;
+    }
+}
+
 export async function createItem(env: ENV, data: DATA) {
     const DEBUG = (env.debug == true);
     const cbinit: cbtype.cbinit = {

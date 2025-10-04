@@ -109,6 +109,19 @@ async function main(): void {
         console.log("main(): Excel: " + ccpmMap.size + ", Codebeamer: " + codebeamerMap.size);
     }
 
+    /**
+     * PREPARE 3: create a new baseline when specified by the command line argument.
+     *
+     */
+    if (env.baseline) {
+        const res = await codebeamer.setBaseline(env);
+        if (res == null) {
+            console.error("main(): error ignored: response retuned from Codebeamer: " + JSON.stringify(res));
+        } else {
+            if (DEBUG) console.log("main(): new baseline created: " + res.name);
+        }
+    }
+
     /*
      * STEP 1: When an item deleted from ccpm, then delete it from Codebeamer as well.
      *
